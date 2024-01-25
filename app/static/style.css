@@ -1,0 +1,10 @@
+/* Make footer stick to the bottom of the page */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+div#footer {
+    margin-top: auto;
+}

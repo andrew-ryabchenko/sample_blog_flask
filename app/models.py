@@ -4,7 +4,7 @@ from flask import g
 from app.dbschema import User, Post, ENGINE
 from app.util import password_hash
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from datetime import datetime as dt
 
 def get_session():
@@ -173,3 +173,11 @@ def get_user_posts(user_id: int, limit: int = 100, offset: int = 0) -> list[Post
     posts = posts.all()
     
     return posts
+
+def delete_post(post_id: int, user_id: id) -> None:
+    """Deletes post from database."""
+    #Get session object
+    session = get_session()
+    #Only deletes post if logged in user owns the post
+    session.execute(delete(Post).where(Post.id == post_id).where(Post.user_id == user_id))
+    session.commit()

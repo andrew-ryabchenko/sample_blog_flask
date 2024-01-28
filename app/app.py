@@ -2,11 +2,12 @@
 Authentication is not implemented yet, but the routes are there to handle the requests."""
 
 from flask import Flask, render_template, request, redirect, g
-from app.forms import register_form, login_form, new_post_form, filter_posts_form
-from app.models import add_user, validate_user, load_user, add_post, get_posts, get_post, filter_posts, get_user_posts
+from app.forms import new_post_form, filter_posts_form
+from app.models import load_user, add_post, get_posts, get_post, filter_posts, get_user_posts, delete_post
 from secrets import token_hex
-from flask_login import LoginManager, login_user, logout_user, current_user
+from flask_login import LoginManager, current_user
 from app.decorators import login_required
+from app.authentication import auth
 
 app = Flask(__name__)
 #Generate a random secret key
@@ -14,10 +15,13 @@ app.secret_key = token_hex(32)
 #Add application name to the global scope of Jinja templates
 app.config["application_name"] = "Sample Blog"
 
+#Register blueprints
+app.register_blueprint(auth)
+
 #Initialize flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"
+login_manager.login_view = "auth.login"
 
 #User retrieval function for flask-login
 @login_manager.user_loader
@@ -33,6 +37,12 @@ def index():
     form = filter_posts_form(request.form)
     posts = get_posts()
     return render_template("home.html", posts=posts, form=form)
+
+@app.route("/about")
+@login_required
+def about():
+    """Return about page."""
+    return render_template("about.html")
 
 @app.route("/add-post", methods=["GET", "POST"])
 @login_required
@@ -60,22 +70,17 @@ def read_post():
         return render_template("post_view.html", referrer=referrer, post=post)
     return redirect("/")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    """Login Form."""
-    form = login_form(request.form)
-
-    if request.method == "POST" and form.validate():
-        #Validation has passed. User must exist in the database.
-        #Collect user_id from database
-        user = validate_user(form.email.data, form.password.data)
-        #Log the user in with flask-login
-        login_user(user)
-        #Redirect to homepage
-        return redirect("/")
-        
-    #Render login page
-    return render_template("login.html", form=form)
+@app.get("/delete_post")
+@login_required
+def delete_post_v():
+    """Delete post."""
+    if "id" in request.args:
+        post_id = request.args["id"]
+        user_id = current_user.id
+        #Delete post
+        delete_post(post_id, user_id)
+    #Redirect to previous page
+    return redirect(request.referrer)
 
 @app.get("/apply-filter")
 @login_required
@@ -96,45 +101,11 @@ def apply_filter():
 @login_required
 def my_posts():
     """Return posts created by current user."""
-    form=filter_posts_form(request.form)
+    referrer = request.referrer
     #Get posts from database
     posts = get_user_posts(user_id=current_user.id)
     #Render homepage with filtered posts
-    return render_template("home.html", posts=posts, form=form)
-
-@app.post("/register")
-def register_post():
-    """Register Form."""
-    form = register_form(request.form)
-   
-    if form.validate():
-        #Upon form validation it is certain that the email is not in-use
-        #and that the passwords match.
-
-        #Add user to database and collect user_id
-        user = add_user(form.email.data, form.username.data, form.password.data)
-        #Log the user in with flask-login
-        login_user(user)
-        #Redirect to homepage
-        return redirect("/")
-        
-    #Render register page
-    return render_template("register.html", form=form)
-   
-@app.get("/register")
-def register_get():
-    """Register Form."""
-    form = register_form()
-    return render_template("register.html", form=form)
-
-@app.route("/logout")
-@login_required
-def logout():
-    """Logout route."""
-    #Log the user out with flask-login
-    logout_user()
-    #Redirect to login page
-    return redirect("/login")
+    return render_template("my_posts.html", posts=posts, referrer=referrer)
 
 @app.teardown_appcontext
 def close_db_session(exception=None):

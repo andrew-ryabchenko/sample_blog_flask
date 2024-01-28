@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Home - 
+{% endblock %}
+
+{% block content %}
+<!-- Control bar -->
+<div class="d-flex flex-row align-items-center p-1">
+  <div>
+  <a class="btn btn-sm btn-outline-primary" href="/add-post">New Post</a>
+  </div>
+</div>
+<hr/>
+
+  <div class="d-flex flex-row justify-content-evenly flex-wrap">
+  <!-- Render posts -->
+    {% if posts %}
+      {% for post in posts %}
+          <div class="d-flex align-items-stretch">
+            <div class="card mb-4 mx-auto" style="width: 15rem;">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ post[0].title }}</h6>
+                <hr/>
+                <p class="card-text">{{ post[0].excerpt }}</p>
+              </div>
+              <div class="align-self-start mx-4">
+                <span class="badge text-bg-info">#{{ post[0].tag }}</span>
+              </div>
+              <div class="p-3">
+                <p>
+                    By: {{ post[1] }}
+                </p>
+                <p>
+                    At: {{ post[0].timestamp }}
+                </p>
+            </div>
+              <hr/>
+              <div class="align-self-stretch mx-4 mb-2">
+                <div class="d-flex flex-row justify-content-between">
+                  <a href="delete_post?id={{ post[0].id }}" class="nav-link delete_post">Delete</a>
+                  <a href="read_post?id={{ post[0].id }}" class="nav-link">Read</a>
+          
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Confirm post delete function
+    function confirm_post_delete(e) {
+      if (!confirm("Are you sure you want to delete this post?")) {
+        e.preventDefault();
+      }
+    }
+
+    // Add event listener to delete post links
+    for (let link of document.querySelectorAll("a.delete_post")){
+      link.addEventListener("click", confirm_post_delete);
+    }
+  </script>
+{% endblock %}
+

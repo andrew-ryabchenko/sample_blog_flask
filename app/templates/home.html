@@ -5,16 +5,93 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-md-6 mt-5">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Home</h4>
-                </div>
-                <div class="card-body">
-                    <p>Welcome to Facepook!</p>
-                </div>
+<!-- Control bar -->
+<div class="d-flex flex-row align-items-center p-1">
+  <div class="me-3">
+  <a class="card-link" onclick = "offvancas_show()" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvas_filters">
+    Filter
+  </a>
+  </div>
+  <div>
+  <a class="btn btn-sm btn-outline-primary" href="/add-post">New Post</a>
+  </div>
+</div>
+<hr/>
+<!-- Offcanvas with post filtering options -->
+<div class="offcanvas offcanvas-start" 
+     tabindex="-1" id="offcanvas_filters" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Custom filters</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <form action="/apply-filter" method="get">
+  <div class="offcanvas-body d-flex flex-column">
+    
+      <div class="mb-3">
+        {{ form.tag.label() }}
+        {{ form.tag(class_="form-control", id_="post_tag") }}
+      </div>
+      <div class="mb-3">
+        {{ form.username.label() }}
+        {{ form.username(class_="form-control", id_="post_username") }}
+      </div>
+      <div class="mb-3">
+        {{ form.title.label() }}
+        {{ form.title(class_="form-control", id_="post_date",
+            placeholder="Full or partial post title") }}
+      </div>
+      <div class="text-end">
+        <button class="btn btn-sm btn-outline-secondary" type="submit" id="form_reset">
+          Reset
+        </button>
+        <button class="btn btn-sm btn-outline-primary" type="submit">
+          Filter
+        </button>
+      </div>
+    
+  </div>
+</div>
+ <div class="row g-5 justify-content-center">
+  <!-- Render posts -->
+    {% if posts %}
+      {% for post in posts %}
+          <div class="col d-flex align-items-stretch">
+            <div class="card mb-4 mx-auto" style="width: 15rem;">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ post[0].title }}</h6>
+                <hr/>
+                <p class="card-text">{{ post[0].excerpt }}</p>
+              </div>
+              <div class="align-self-start mx-4">
+                <span class="badge text-bg-info">#{{ post[0].tag }}</span>
+              </div>
+              <div class="p-3">
+                By: {{ post[1] }}
+              </div>
+              <hr/>
+              <div class="align-self-end mx-4 mb-2">
+                <a href="read_post?id={{ post[0].id }}" class="nav-link">Read</a>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Toggle offcanvas with post filters
+  function offvancas_show() {
+    var myOffcanvas = document.getElementById('offcanvas_filters')
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
+    bsOffcanvas.show()
+  }
+  //Reset values of post filter field and re-submit the form
+  document.getElementById('form_reset').addEventListener('click', function() {
+    document.getElementById('post_tag').value = '';
+    document.getElementById('post_username').value = '';
+    document.getElementById('post_date').value = '';
+  })
+</script>
 {% endblock %}

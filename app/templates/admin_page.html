@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Admin -
+{% endblock %}
+{% block content %}
+<h4 class="text-center">{{config.application_name}} User List</h4>
+<div class="container-sm mt-3">
+<table class="table mx-auto">
+    <thead>
+      <tr>
+        <th scope="col">User ID</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% if users %}
+        {% for user in users %}
+            <tr>
+                <th scope="row">{{ user[0].id }}</th>
+                <td>{{ user[0].username }}</td>
+                <td>{{ user[0].email }}</td>
+            </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

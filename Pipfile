@@ -8,5 +8,9 @@ flask = "*"
 flask-sqlalchemy = "*"
 pytest = "*"
 pytest-cov = "*"
+sqlalchemy = "*"
+wtforms = "*"
+multidict = "*"
+flask-login = "*"
 
 [dev-packages]

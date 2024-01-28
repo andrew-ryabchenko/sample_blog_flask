@@ -3,7 +3,7 @@ Authentication is not implemented yet, but the routes are there to handle the re
 
 from flask import Flask, render_template, request, redirect, g
 from app.forms import register_form, login_form, new_post_form, filter_posts_form
-from app.models import add_user, validate_user, load_user, add_post, get_posts, get_post, filter_posts
+from app.models import add_user, validate_user, load_user, add_post, get_posts, get_post, filter_posts, get_user_posts
 from secrets import token_hex
 from flask_login import LoginManager, login_user, logout_user, current_user
 from app.decorators import login_required
@@ -91,6 +91,16 @@ def apply_filter():
     print("Form did not validate")
     #Render homepage with no posts
     return render_template("home.html", form=form)
+
+@app.get("/my-posts")
+@login_required
+def my_posts():
+    """Return posts created by current user."""
+    form=filter_posts_form(request.form)
+    #Get posts from database
+    posts = get_user_posts(user_id=current_user.id)
+    #Render homepage with filtered posts
+    return render_template("home.html", posts=posts, form=form)
 
 @app.post("/register")
 def register_post():

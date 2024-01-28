@@ -12,5 +12,6 @@ sqlalchemy = "*"
 wtforms = "*"
 multidict = "*"
 flask-login = "*"
+faker = "*"
 
 [dev-packages]

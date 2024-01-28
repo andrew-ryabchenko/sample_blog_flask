@@ -51,11 +51,12 @@
     
   </div>
 </div>
- <div class="row g-5 justify-content-center">
+
+  <div class="d-flex flex-row justify-content-evenly flex-wrap">
   <!-- Render posts -->
     {% if posts %}
       {% for post in posts %}
-          <div class="col d-flex align-items-stretch">
+          <div class="d-flex align-items-stretch">
             <div class="card mb-4 mx-auto" style="width: 15rem;">
               <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-body-secondary">{{ post[0].title }}</h6>
@@ -66,8 +67,13 @@
                 <span class="badge text-bg-info">#{{ post[0].tag }}</span>
               </div>
               <div class="p-3">
-                By: {{ post[1] }}
-              </div>
+                <p>
+                    By: {{ post[1] }}
+                </p>
+                <p>
+                    At: {{ post[0].timestamp }}
+                </p>
+            </div>
               <hr/>
               <div class="align-self-end mx-4 mb-2">
                 <a href="read_post?id={{ post[0].id }}" class="nav-link">Read</a>

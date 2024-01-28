@@ -106,8 +106,8 @@ def get_posts(limit=100, offset=0) -> list[Post]:
     posts = session.execute(select(Post, User.username).
                     limit(limit).
                     offset(offset).
-                    order_by(Post.timestamp).
-                    join_from(Post, User, Post.user_id == User.id))
+                    join_from(Post, User, Post.user_id == User.id).
+                    order_by(Post.timestamp.desc()))
     posts = posts.all()
     return posts
 
@@ -150,9 +150,25 @@ def filter_posts(tag: str = None, username: str = None, title: str = None,
         stmt = stmt.where(Post.title.like(f"%{title}%"))
     
     #Add additional constraints to query object
-    stmt = stmt.join_from(Post, User, Post.user_id == User.id).limit(limit).offset(offset).order_by(Post.timestamp)
+    stmt = stmt.join_from(Post, User, Post.user_id == User.id).limit(limit).offset(offset).order_by(Post.timestamp.desc())
     #Execute query
     posts = session.execute(stmt)
+    #Fetch posts and return list of Post objects
+    posts = posts.all()
+    
+    return posts
+
+def get_user_posts(user_id: int, limit: int = 100, offset: int = 0) -> list[Post]:
+    """Fetches posts from the database created by user_id."""
+    #Get session object
+    session = get_session()
+    #Get posts from database
+    posts = session.execute(select(Post, User.username).
+                    where(Post.user_id == user_id).
+                    join_from(Post, User, Post.user_id == User.id).
+                    limit(limit).
+                    offset(offset).
+                    order_by(Post.timestamp.desc()))
     #Fetch posts and return list of Post objects
     posts = posts.all()
     

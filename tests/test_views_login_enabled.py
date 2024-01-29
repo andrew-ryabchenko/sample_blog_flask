@@ -1,24 +1,23 @@
 """This module contains tests that are executed with authentication enabled
 as if the user is not authenticated."""
 
+#pylint: disable=redefined-outer-name disable=unused-argument disable=import-error
 import pytest
 from flask import Flask
 from app import make_app
-from sqlalchemy import select
-from app.dbschema import User
+from app.app import load_usr
 
 @pytest.fixture(scope="module")
 def app() -> Flask:
     """Configure instance of the application for testing."""
     return make_app(login_disabled=False)
 
-
 def test_login(app: Flask, test_user, session, mocker):
     """Tests if /login route renders login page
     if client is not authenticated."""
     #Mock return value of get_session function
     mocker.patch("app.models.get_session", return_value=session)
-    #Mock return value of password_hash function because 
+    #Mock return value of password_hash function because
     #test user in the database has unhashed value of password
     mocker.patch("app.models.password_hash", return_value="password")
     client = app.test_client()
@@ -36,7 +35,7 @@ def test_register_post(app: Flask, test_user, session, mocker):
     if form validation fails."""
     #Mock return value of get_session function
     mocker.patch("app.models.get_session", return_value=session)
-    
+
     client = app.test_client()
 
     #Provide email that already in-use by test account
@@ -123,7 +122,6 @@ def test_my_posts(app: Flask):
 def test_load_usr(test_user, session, mocker):
     """Test load_usr function that handles user loading
     for flask_login extension."""
-    from app.app import load_usr
 
     #Mock return value of get_session function
     mocker.patch("app.models.get_session", return_value=session)
@@ -133,5 +131,4 @@ def test_load_usr(test_user, session, mocker):
 
 
 def test_clean_up(session):
-    """Clean up database before the next module."""
-    pass
+    """Request fixture to trigger database clean-up before the next module."""

@@ -1,19 +1,25 @@
+"""This module contains fixtures that are used by multiple test modules."""
+
+#pylint: disable=import-error disable=unused-argument
+#pylint: disable=redefined-outer-name disable=too-few-public-methods
 import pytest
 from flask import Flask
+from sqlalchemy.orm import Session
+from sqlalchemy import delete
+from faker import Faker
+from tests.mock_posts import generate_posts
+from tests.mock_users import generate_users
+from app.forms import RegisterForm
 from app.dbschema import User, Post, ENGINE
 from app import make_app
-from sqlalchemy.orm import Session
-from faker import Faker
 from app.util import password_hash
-from sqlalchemy import delete
-from tests.mock_posts import generate_posts
-from app.forms import RegisterForm
 
 @pytest.fixture(scope="session")
 def g():
     """Returns a simulateed g object."""
     class G:
-        pass
+        """Simulates g object."""
+
     return G()
 
 @pytest.fixture(scope="module")
@@ -52,7 +58,7 @@ def new_user(session) -> User:
     user = User(username=profile["username"],
                 email=profile["mail"],
                 password_hash=password_hash("password"))
-    
+
     session.add(user)
     session.commit()
 
@@ -108,7 +114,6 @@ def clean_up(session):
 @pytest.fixture(scope="module")
 def mock_users(clean_up):
     """Generates mock users for testing purposes."""
-    from tests.mock_users import generate_users
     generate_users(5)
 
 @pytest.fixture(scope="module")

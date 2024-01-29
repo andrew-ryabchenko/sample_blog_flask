@@ -1,6 +1,8 @@
+"""Tests for custom form validators."""
+# pylint: disable=import-error
 import pytest
+from wtforms import ValidationError
 from app.forms import verify_email_in_use, check_credentials, verify_username_in_use
-from wtforms import ValidationError 
 
 def test_verify_email_in_use(mocker, form, session):
     """Confirms that verify_email_in_use function properly"""
@@ -11,7 +13,6 @@ def test_verify_email_in_use(mocker, form, session):
     #Check if test user exists
     with pytest.raises(ValidationError):
         verify_email_in_use(form, form.email)
-
 
 def test_check_credentials(mocker, form, session):
     """Confirms that check_credentials function properly"""

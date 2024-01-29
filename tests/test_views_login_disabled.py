@@ -1,10 +1,9 @@
 """This module contains tests that are executed with authentication disabled
 as if the user is authenticated."""
-
+#pylint: disable=import-error disable=unused-argument
 from flask import Flask
 from sqlalchemy.orm import Session
-from sqlalchemy import delete
-from app.dbschema import User, Post, ENGINE
+from app.dbschema import ENGINE
 
 def get_test_session():
     """Yields a session object for testing."""
@@ -85,10 +84,10 @@ def test_apply_filter(app: Flask, post_object, mocker, session):
     #Mock filter_posts function
     mocker.patch("app.app.filter_posts",
                  return_value=[(post_object, "andrew@gmail.com")])
-    
+
     #Mock get_session function return value
     mocker.patch("app.models.get_session", return_value=session)
-    
+
     client = app.test_client()
     response = client.get("/apply-filter?title=test&username=test&tag=test")
 
@@ -143,10 +142,10 @@ def test_register_post(app: Flask, mocker, current_user, session):
     # Mock return value of add_user function
     mocker.patch("app.authentication.add_user",
                  return_value=current_user)
-    
+
     #Mock get_session function return value
     mocker.patch("app.models.get_session", return_value=session)
-    
+
     client = app.test_client()
     #Submit mock registration form to the endpoint
     response = client.post("/register", data={
@@ -169,5 +168,4 @@ def test_logout(app: Flask):
     assert "/login" == response.headers["Location"]
 
 def test_clean_up(session):
-    """Clean up database before the next module."""
-    pass
+    """Request fixture to trigger database clean-up before the next module."""

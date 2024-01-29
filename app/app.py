@@ -1,11 +1,13 @@
 """This module implements a simple Flask app with routes for a homepage, login, and register page.
 Authentication is not implemented yet, but the routes are there to handle the requests."""
 
-from flask import Flask, render_template, request, redirect, g
-from app.forms import new_post_form, filter_posts_form
-from app.models import load_user, add_post, get_posts, get_post, filter_posts, get_user_posts, delete_post
+#pylint: disable=import-error disable=unused-argument
 from secrets import token_hex
+from flask import Flask, render_template, request, redirect, g
 from flask_login import LoginManager, current_user
+from app.forms import new_post_form, filter_posts_form
+from app.models import load_user, add_post, get_posts, get_post
+from app.models import filter_posts, get_user_posts, delete_post
 from app.authentication import auth
 from app.decorators import login_required
 
@@ -51,17 +53,19 @@ def add_post_v():
 
     if request.method == "POST" and form.validate():
         #Create new post
-        add_post(form.title.data, form.excerpt.data, 
-                form.content.data, form.tag.data, 
+        add_post(form.title.data, form.excerpt.data,
+                form.content.data, form.tag.data,
                 current_user.id)
         #Redirect to homepage
         return redirect("/")
-    
+
     return render_template("new_post.html", form=form)
 
 @app.get("/read_post")
 @login_required
 def read_post():
+    """Retrieve post from database and render post view page."""
+
     if "id" in request.args:
         referrer = request.referrer
         post_id = request.args["id"]

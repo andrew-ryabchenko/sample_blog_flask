@@ -1,10 +1,11 @@
 """This module defines blueprint for authentication routes."""
 
+#pylint: disable=import-error
 from flask import Blueprint, render_template, request, redirect
-from app.forms import register_form, login_form
-from app.models import add_user, validate_user
 from flask_login import login_user, logout_user
 from app.decorators import login_required, already_logged_in
+from app.forms import register_form, login_form
+from app.models import add_user, validate_user
 
 auth = Blueprint("auth", __name__)
 
@@ -22,7 +23,7 @@ def login():
         login_user(user)
         #Redirect to homepage
         return redirect("/")
-        
+
     #Render login page
     return render_template("login.html", form=form)
 
@@ -31,7 +32,7 @@ def login():
 def register_post():
     """Register Form."""
     form = register_form(request.form)
-   
+
     if form.validate():
         #Upon form validation it is certain that the email is not in-use
         #and that the passwords match.
@@ -42,7 +43,7 @@ def register_post():
         login_user(user)
         #Redirect to homepage
         return redirect("/")
-        
+
     #Render register page
     return render_template("register.html", form=form)
 

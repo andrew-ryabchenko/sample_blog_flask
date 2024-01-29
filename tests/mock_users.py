@@ -1,9 +1,9 @@
 """Generates mock users for testing purposes."""
-
+#pylint: disable=import-error
 from faker import Faker
+from sqlalchemy.orm import Session
 from app.dbschema import User, ENGINE
 from app.util import password_hash
-from sqlalchemy.orm import Session
 
 def generate_users(quantity=5) -> None:
     """Generates mock users for testing purposes."""

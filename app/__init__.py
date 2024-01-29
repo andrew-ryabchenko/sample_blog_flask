@@ -1,10 +1,11 @@
 """Initialize the app."""
+
 import importlib
 
 def make_app(name: str = None, login_disabled: bool = False):
     """Provides optional additional configurations to the app.
     Mainly used during testing."""
-
+    #pylint: disable=import-outside-toplevel
     from app import app
     #Re-importing app module to make the Flask app state reset
     #when using this factory function second time

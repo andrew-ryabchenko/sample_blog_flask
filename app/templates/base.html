@@ -38,6 +38,9 @@
       {% endif %}
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-lg-auto">
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">{{ current_user.email }}</a>
+          </li>
           {% if not current_user.admin %}
           <li class="nav-item">
             <a class="nav-link" href="/my-posts">My Posts</a>

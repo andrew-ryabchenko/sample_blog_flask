@@ -1,11 +1,12 @@
 """This module cocntains custom view function decorators that
 support various parts of the application."""
 
+#pylint: disable=import-error
 from functools import wraps
-from app.models import get_users
 from flask import render_template, redirect
 from flask_login import current_user
 from flask_login.utils import login_required as login_required_flask_login
+from app.models import get_users
 
 def login_required(view_func):
     """Custom version of login_required that checks if user is admin
@@ -21,10 +22,10 @@ def login_required(view_func):
                 #Fetch all users form the database.
                 users = get_users()
                 return render_template("admin_page.html", users=users)
-        
+
         #Wrap view function with login_required by flask_login
         return login_required_flask_login(view_func)(*args, **kwargs)
-        
+
     return wrapper
 
 def already_logged_in(view_func):

@@ -6,8 +6,8 @@ from app.forms import new_post_form, filter_posts_form
 from app.models import load_user, add_post, get_posts, get_post, filter_posts, get_user_posts, delete_post
 from secrets import token_hex
 from flask_login import LoginManager, current_user
-from app.decorators import login_required
 from app.authentication import auth
+from app.decorators import login_required
 
 app = Flask(__name__)
 #Generate a random secret key
@@ -27,7 +27,6 @@ login_manager.login_view = "auth.login"
 @login_manager.user_loader
 def load_usr(user_id: str):
     """Load user by id."""
-    print("Loading user")
     return load_user(user_id)
 
 @app.route("/")
@@ -53,8 +52,8 @@ def add_post_v():
     if request.method == "POST" and form.validate():
         #Create new post
         add_post(form.title.data, form.excerpt.data, 
-                 form.content.data, form.tag.data, 
-                 current_user.id)
+                form.content.data, form.tag.data, 
+                current_user.id)
         #Redirect to homepage
         return redirect("/")
     
@@ -89,11 +88,9 @@ def apply_filter():
     form = filter_posts_form(request.args)
     #Get posts from database
     if form.validate():
-        print("Form validated")
         posts = filter_posts(form.tag.data, form.username.data, form.title.data)
         #Render homepage with filtered posts
         return render_template("home.html", posts=posts, form=form)
-    print("Form did not validate")
     #Render homepage with no posts
     return render_template("home.html", form=form)
 
@@ -113,6 +110,3 @@ def close_db_session(exception=None):
     db_session = g.pop('db_session', None)
     if db_session is not None:
         db_session.close()
-
-if __name__ == "__main__":
-    app.run(debug=True)

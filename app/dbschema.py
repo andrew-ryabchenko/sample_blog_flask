@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from flask_login import UserMixin
 from sqlalchemy.orm import object_session
 
-ENGINE = create_engine('sqlite:///database.db', echo=True)
+ENGINE = create_engine('sqlite:///prod.db', echo=True)
 
 #Declarative base
 class Base(DeclarativeBase):

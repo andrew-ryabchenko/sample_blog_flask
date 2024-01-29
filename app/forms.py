@@ -52,7 +52,7 @@ class NewPostForm(Form):
                                         message="Excerpt must be between 4 and 200 characters."),
                                         validators.DataRequired(message="Excerpt is required.")])
     
-    tag = StringField('Tag', [validators.Length(min=4, max=100, 
+    tag = StringField('Tag', [validators.Length(min=2, max=100, 
                                         message="Tag must be between 4 and 100 characters.")])
 
 class FilterPostsForm(Form):

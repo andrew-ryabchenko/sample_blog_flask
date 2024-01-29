@@ -13,5 +13,6 @@ wtforms = "*"
 multidict = "*"
 flask-login = "*"
 faker = "*"
+pytest-mock = "*"
 
 [dev-packages]

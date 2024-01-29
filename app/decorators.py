@@ -3,7 +3,7 @@ support various parts of the application."""
 
 from functools import wraps
 from app.models import get_users
-from flask import render_template
+from flask import render_template, redirect
 from flask_login import current_user
 from flask_login.utils import login_required as login_required_flask_login
 
@@ -25,4 +25,15 @@ def login_required(view_func):
         #Wrap view function with login_required by flask_login
         return login_required_flask_login(view_func)(*args, **kwargs)
         
+    return wrapper
+
+def already_logged_in(view_func):
+    """View function wrapper that redirects client to home page if already 
+    authenticated."""
+
+    @wraps(view_func)
+    def wrapper(*args, **kwargs):
+        if current_user.is_authenticated:
+            return redirect("/")
+        return view_func(*args, **kwargs)
     return wrapper

@@ -26,7 +26,7 @@ def validate_user(email: str, password: str) -> User | None:
     #Get this user from database
     user = session.execute(select(User).where(User.email == user.email).
                            where(User.password_hash == pswd_hash)).scalar_one_or_none()
-    #Return user id if user exists, otherwise return None
+    #Return user if user exists, otherwise return None
     return user if user else None
 
 def load_user(user_id: str) -> User | None:
@@ -52,17 +52,6 @@ def add_user(email:str, username: str, password:str, admin=False) -> User:
     session.commit()
     # Return User instance of newly inserted user
     return user
-
-def change_password(id: int, new_password: str) -> None:
-    """Changes user password."""
-    #Get session object
-    session = next(get_session())
-    #Generate password hash
-    pswd_hash = password_hash(new_password)
-    #Get user from database
-    user = session.get(User, id)
-    #Update user password hash
-    user.password_hash = pswd_hash
 
 def check_email_exists(email: str) -> bool:
     """Checks if user with given email already exists in the database."""

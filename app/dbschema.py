@@ -1,11 +1,13 @@
 """This module declares the database metadata and emits corresponding CREATE statements."""
 
 #pylint: disable=import-error disable=too-few-public-methods
+from os import getenv
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import DeclarativeBase
 from flask_login import UserMixin
 
-ENGINE = create_engine('sqlite:///prod.db', echo=True)
+DB_PATH = getenv('DB_PATH', 'prod.db')
+ENGINE = create_engine(f'sqlite:///{DB_PATH}', echo=True)
 
 #Declarative base
 class Base(DeclarativeBase):
